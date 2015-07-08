@@ -99,3 +99,5 @@ public class SpeexHeader {
 				}
 ```
 
+最后上张完整的效果图：
+![这里写图片描述](http://img.blog.csdn.net/20150708110938092)
