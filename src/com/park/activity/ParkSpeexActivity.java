@@ -7,6 +7,8 @@ import java.io.File;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.parkspeex.R;
@@ -92,8 +95,40 @@ OnItemLongClickListener{
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
-		// TODO Auto-generated method stub
-		return false;
+		String fileAudioNameList = ((TextView) view).getText().toString();
+		final File fileAudioList = new File(filePath + "/" + fileAudioNameList);
+		
+		if(fileAudioList==null || !fileAudioList.isFile() ){
+			Toast.makeText(this, "该文件不存在", 1000).show();
+			return true;
+		}
+		
+		AlertDialog dialog = new AlertDialog.Builder(this).create();
+		dialog.setTitle("提示");
+		dialog.setMessage("是否删除该文件");
+		
+		dialog.setButton("取消", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+					dialog.dismiss();
+			}
+		});
+		dialog.setButton2("确定", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				fileAudioList.delete();
+				adaperListAudio.remove(fileAudioList.getName());
+				adaperListAudio.notifyDataSetChanged();
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
+		return true;
 	}
 	/* (non-Javadoc)
 	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
@@ -101,8 +136,10 @@ OnItemLongClickListener{
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		// TODO Auto-generated method stub
-		
+		String fileAudioNameList = ((TextView) view).getText().toString();
+		File fileAudioList = new File(filePath + "/" + fileAudioNameList);
+		String name = fileAudioList.getAbsolutePath();
+		SpeexTool.playMusic(this, name);
 	}
 	/* (non-Javadoc)
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
@@ -155,4 +192,8 @@ OnItemLongClickListener{
 					e.printStackTrace();
 				}
 	}
+	
+	
+	
+
 }

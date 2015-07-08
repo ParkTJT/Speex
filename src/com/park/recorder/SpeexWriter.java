@@ -84,11 +84,11 @@ public class SpeexWriter {
 		 byte[] bitratebyte = ByteUtil.toByteArray(bitrate, 4);
 		 int framesize = 20;
 		 byte[] framesizebyte = ByteUtil.toByteArray(framesize, 4);
-		 out.write(versionbyte);
-		 out.write(ratebyte);
-		 out.write(modebyte);
-		 out.write(bitratebyte);
-		 out.write(framesizebyte);
+		 out.write(versionbyte);//0
+		 out.write(ratebyte);//1
+		 out.write(modebyte);//2
+		 out.write(bitratebyte);//3
+		 out.write(framesizebyte);//4
 		/**spx真实有效数据 dataBuffer*/
 		out.write(dataBuffer,0, dataBufferPtr);
 	}

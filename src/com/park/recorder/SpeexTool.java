@@ -9,6 +9,10 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.media.AudioManager;
 
+import com.park.play.OnSpeexCompletionListener;
+import com.park.play.SpeexDecoder;
+import com.park.play.SpeexPlayer;
+
 /**
  * @author "Park_tan"
  * <h2>TODO
@@ -19,7 +23,8 @@ public class SpeexTool {
 
 	//录音
 	public static SpeexRecorder recorderInstance = null;
-
+	// Speex语音播放
+	public static SpeexPlayer mSpeexPlayer = null;
 	/**
 	 * 开始录音
 	 * 
@@ -83,7 +88,33 @@ public class SpeexTool {
 	 * @param chatmsgid
 	 */
 	public static void playMusic(Context context, String name) {
-		
+		try {
+			// 如果是speex录音
+			if (name != null && name.endsWith(".spx")) {
+				if (mSpeexPlayer != null && mSpeexPlayer.isPlay) {
+					stopMusic(context);
+				} else {
+					muteAudioFocus(context, true);
+					mSpeexPlayer = new SpeexPlayer(name, new OnSpeexCompletionListener() {
+						@Override
+						public void onError(Exception ex) {
+							System.out.println("播放错误");
+						}
+
+						@Override
+						public void onCompletion(SpeexDecoder speexdecoder) {
+							System.out.println("播放完成");
+						}
+					});
+					mSpeexPlayer.startPlay();
+				}
+			} else {
+				System.out.println("音频文件格式不正确");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -91,6 +122,11 @@ public class SpeexTool {
 	 */
 	public static void stopMusic(Context context) {
 		// 停止播放录音
+		if (mSpeexPlayer != null && mSpeexPlayer.isPlay) {
+			mSpeexPlayer.stopPlay();
+			mSpeexPlayer = null;
+			muteAudioFocus(context, false);
+		}
 	}
 
 	@TargetApi(8)
